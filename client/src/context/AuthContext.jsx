@@ -10,8 +10,7 @@ export const AuthProvider = ({ children }) => {
 
   // Configure axios defaults
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'http://localhost:5000';
-
+axios.defaults.baseURL = "https://id-flow-server-4x8wfvotd-radhakrishna2787-8770s-projects.vercel.app";
   useEffect(() => {
     // Check if user info is in localStorage on load
     const storedUser = localStorage.getItem('userInfo');

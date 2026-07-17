@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 // Enable CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+  origin: 'https://id-flow-server-4x8wfvotd-radhakrishna2787-8770s-projects.vercel.app/', // Vite default port
   credentials: true,
 }));
 
