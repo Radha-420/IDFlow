@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 const Login = () => {
@@ -130,6 +130,17 @@ const Login = () => {
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
+              
+              {isStudent && (
+                <div className="text-center mt-4">
+                  <p className="text-sm text-gray-600">
+                    Don't have an account?{' '}
+                    <Link to="/register" className="text-brand-600 hover:underline font-medium">
+                      Register here
+                    </Link>
+                  </p>
+                </div>
+              )}
             </div>
           </form>
           
