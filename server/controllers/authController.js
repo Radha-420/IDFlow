@@ -128,6 +128,7 @@ const registerVerify = async (req, res) => {
       department: rawStudent.Department || rawStudent.department || "",
       branch: rawStudent.Branch || rawStudent.branch || "",
       year: rawStudent.year ? rawStudent.year.toString() : "",
+      course: rawStudent.course || rawStudent.Course || "",
     });
 
     // Clean up OTP
@@ -145,6 +146,7 @@ const registerVerify = async (req, res) => {
       department: user.department,
       branch: user.branch,
       year: user.year,
+      course: user.course,
       photo: user.photo,
       role: user.role,
     });
@@ -194,6 +196,7 @@ const authUser = async (req, res) => {
       department: user.department,
       branch: user.branch,
       year: user.year,
+      course: user.course,
       photo: user.photo,
       role: user.role,
     });
@@ -378,6 +381,7 @@ const forgotPasswordVerifyAndReset = async (req, res) => {
       department: user.department,
       branch: user.branch,
       year: user.year,
+      course: user.course,
       photo: user.photo,
       role: user.role,
     });

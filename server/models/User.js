@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema(
     year: {
         type: String,
     },
+
+    course: {
+        type: String,
+    },
 },
 {
     timestamps: true,

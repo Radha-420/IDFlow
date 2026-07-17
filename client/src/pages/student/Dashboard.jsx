@@ -61,6 +61,12 @@ const Dashboard = () => {
               <span className="text-gray-500">Year</span>
               <span className="font-medium text-gray-800">{user?.year}</span>
             </div>
+            {user?.course && (
+              <div className="flex justify-between border-b border-gray-100 pb-2">
+                <span className="text-gray-500">Course</span>
+                <span className="font-medium text-gray-800">{user?.course}</span>
+              </div>
+            )}
             <div className="flex justify-between border-b border-gray-100 pb-2">
               <span className="text-gray-500">Email</span>
               <span className="font-medium text-gray-800 truncate max-w-[120px]">{user?.email}</span>

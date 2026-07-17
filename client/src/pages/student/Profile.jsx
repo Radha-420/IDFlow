@@ -82,6 +82,15 @@ const Profile = () => {
               </div>
             </div>
 
+            {user?.course && (
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Course</label>
+                <div className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-700 font-medium">
+                  {user?.course}
+                </div>
+              </div>
+            )}
+
             <div>
               <div className="flex justify-between items-end mb-1">
                 <label className="block text-sm font-medium text-gray-500">Phone Number</label>
