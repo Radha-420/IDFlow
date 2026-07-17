@@ -9,9 +9,9 @@ const Sidebar = () => {
 
   const studentLinks = [
     { name: 'Dashboard', path: '/student/dashboard', icon: <MdOutlineDashboard /> },
-    { name: 'My Profile', path: '/student/profile', icon: <FiUsers /> },
     { name: 'Apply ID Card', path: '/student/apply', icon: <FiCreditCard /> },
     { name: 'Payment History', path: '/student/payments', icon: <FiClock /> },
+    { name: 'My Profile', path: '/student/profile', icon: <FiUsers /> }
   ];
 
   const adminLinks = [
