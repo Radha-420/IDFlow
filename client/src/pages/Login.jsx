@@ -123,6 +123,13 @@ const Login = () => {
             </div>
 
             <div>
+              {isStudent && (
+                <div className="flex justify-end mb-3">
+                  <Link to="/forgot-password" className="text-sm text-brand-600 hover:underline font-medium">
+                    Forgot Password?
+                  </Link>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -132,7 +139,7 @@ const Login = () => {
               </button>
               
               {isStudent && (
-                <div className="text-center mt-4">
+                <div className="text-center mt-4 space-y-2">
                   <p className="text-sm text-gray-600">
                     Don't have an account?{' '}
                     <Link to="/register" className="text-brand-600 hover:underline font-medium">

@@ -7,6 +7,7 @@ import { AuthContext } from './context/AuthContext';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import StudentDashboard from './pages/student/Dashboard';
 import Profile from './pages/student/Profile';
 import ApplyIdCard from './pages/student/ApplyIdCard';
@@ -37,6 +38,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} /> : <Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         
         {/* Student Routes */}
         <Route path="/student" element={<ProtectedRoute role="student"><Layout /></ProtectedRoute>}>

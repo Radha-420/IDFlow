@@ -12,41 +12,105 @@ const PaymentHistory = () => {
   const downloadReceipt = (payment) => {
     const doc = new jsPDF();
     
-    doc.setFontSize(22);
-    doc.setTextColor(37, 99, 235);
-    doc.text('Payment Receipt', 105, 20, { align: 'center' });
+    // Header
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text("ADITYA UNIVERSITY", 40, 25);
     
-    doc.setLineWidth(0.5);
-    doc.line(20, 25, 190, 25);
-    
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    
-    const dateStr = new Date(payment.createdAt).toLocaleDateString('en-IN', {
-      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
-
-    doc.text(`Student Name: ${user?.name || 'N/A'}`, 20, 40);
-    doc.text(`PIN Number: ${user?.collegeId || 'N/A'}`, 20, 50);
-
-    doc.text(`Transaction ID: ${payment.transactionId}`, 100, 40);
-    doc.text(`Date: ${dateStr}`, 100, 50);
-    doc.text(`Status: ${payment.status}`, 100, 60);
-    
-    autoTable(doc, {
-      startY: 80,
-      head: [['Description', 'Payment Method', 'Amount']],
-      body: [
-        ['ID Card Processing Fee', payment.paymentMethod, `Rs. ${payment.amount}`],
-      ],
-      theme: 'grid',
-      headStyles: { fillColor: [37, 99, 235] },
-    });
-    
+    // Top right logos / text
     doc.setFontSize(10);
-    doc.setTextColor(150, 150, 150);
-    doc.text('This is a system-generated receipt.', 105, 140, { align: 'center' });
+    doc.setFont("helvetica", "normal");
+    doc.text("08887 76661 | 98496 76662", 190, 15, { align: "right" });
     
+    // Draw rough boxes for NAAC / NBA
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(145, 18, 25, 8, 3, 3);
+    doc.text("NAAC A++", 147, 23);
+    doc.roundedRect(175, 18, 15, 8, 3, 3);
+    doc.text("NBA", 178, 23);
+    
+    doc.setFontSize(8);
+    doc.text("info@adityauniversity.in | www.adityauniversity.in", 190, 30, { align: "right" });
+
+    // Student Details
+    doc.setFontSize(10);
+    doc.text("Name", 20, 45); 
+    doc.text(`: ${user?.name?.toUpperCase() || 'N/A'}`, 45, 45);
+    doc.text("Roll No.", 20, 52); 
+    doc.text(`: ${user?.collegeId || 'N/A'}`, 45, 52);
+    doc.text("Course", 20, 59); 
+    doc.text(`: B.Tech`, 45, 59);
+    doc.text("Receipt No", 20, 66); 
+    doc.text(`: AUS${new Date(payment.createdAt).getFullYear().toString().slice(-2)}/${payment.transactionId.slice(-5).toUpperCase()}`, 45, 66);
+
+    doc.text("Branch/Section", 110, 52); 
+    doc.text(`: ${user?.department || 'CSE'}/Sec-@`, 140, 52);
+    doc.text("Date:", 145, 59); 
+    doc.text(new Date(payment.createdAt).toLocaleDateString('en-GB'), 155, 59);
+
+    // Table
+    autoTable(doc, {
+      startY: 75,
+      head: [['Sl No', 'Particulars', 'Year/Sem', 'Amount']],
+      body: [
+        ['1', 'Hallticket/Receipt/Zerox/Id Card', user?.year || '1', payment.amount.toString()]
+      ],
+      foot: [['', 'Total Amount', '', payment.amount.toString()]],
+      theme: 'grid',
+      headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'normal' },
+      bodyStyles: { textColor: [0, 0, 0], lineWidth: 0.1 },
+      footStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold' },
+      columnStyles: {
+        0: { cellWidth: 15, halign: 'center' },
+        1: { cellWidth: 100 },
+        2: { cellWidth: 25, halign: 'center' },
+        3: { halign: 'right' }
+      }
+    });
+
+    // Footer Details
+    const finalY = doc.lastAutoTable.finalY + 15;
+    
+    // Amount in words (simple hardcode for 100 since ID card is always 100, but can be dynamic)
+    const amountInWords = payment.amount === 100 ? "One Hundred" : payment.amount.toString();
+    
+    doc.setFont("helvetica", "normal");
+    doc.text("Rupees", 20, finalY); 
+    doc.text(`: ${amountInWords} Only`, 45, finalY);
+    doc.text("Mode", 20, finalY + 7); 
+    doc.text(`: ${payment.paymentMethod || 'Online'}`, 45, finalY + 7);
+    doc.text("Narration", 20, finalY + 14); 
+    doc.text(`: `, 45, finalY + 14);
+    doc.text("Balance Due", 20, finalY + 21); 
+    doc.text(`: 0`, 45, finalY + 21);
+
+    // Signature Stamp
+    doc.setDrawColor(200, 200, 255);
+    doc.setLineWidth(0.5);
+    doc.circle(160, finalY + 10, 15, 'S'); // Outer circle
+    doc.circle(160, finalY + 10, 13, 'S'); // Inner circle
+    
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 255); // Faint purple/blue for stamp text
+    doc.text("Society University", 160, finalY, { align: "center" });
+    
+    doc.setTextColor(0, 0, 0);
+    doc.text("Signature", 160, finalY + 10, { align: "center" });
+    doc.text("(M MANIKANTA)", 160, finalY + 15, { align: "center" });
+
+    // Bottom Footer
+    doc.setFontSize(8);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Powered by www.webprosindia.com", 20, finalY + 40);
+    
+    const printDate = new Date().toLocaleString('en-GB', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    }).replace(',', '');
+    
+    doc.text(`Printed on ${printDate}`, 150, finalY + 40);
+
     doc.save(`Receipt_${payment.transactionId}.pdf`);
   };
 

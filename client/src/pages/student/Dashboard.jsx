@@ -140,7 +140,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Payments</p>
-                <p className="text-xl font-bold text-gray-800">{paymentsCount}</p>
+                <p className="text-xl font-bold text-gray-800">{application ? paymentsCount : 0}</p>
               </div>
             </div>
             

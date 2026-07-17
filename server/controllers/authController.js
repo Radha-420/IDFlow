@@ -50,14 +50,28 @@ const registerSendOtp = async (req, res) => {
       password // storing password temporarily until verification
     });
 
-    // Send email using Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Configure Nodemailer based on email provider (Gmail or Brevo/Sendinblue)
+    const isBrevo = process.env.EMAIL_PASS && process.env.EMAIL_PASS.startsWith('xsmtpsib-');
+    
+    const transporter = nodemailer.createTransport(
+      isBrevo 
+        ? {
+            host: "smtp-relay.brevo.com",
+            port: 587,
+            secure: false,
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            }
+          }
+        : {
+            service: "gmail",
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          }
+    );
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -242,10 +256,143 @@ const logoutUser = (req, res) => {
   });
 };
 
+// ===============================
+// Forgot Password - Send OTP
+// POST /api/auth/forgot-password-send-otp
+// ===============================
+const forgotPasswordSendOtp = async (req, res) => {
+  const { rollNumber, email } = req.body;
+
+  try {
+    if (!rollNumber || !email) {
+      return res.status(400).json({ message: "Please provide all required fields." });
+    }
+
+    // Verify user exists in the system
+    const user = await User.findOne({ collegeId: rollNumber, role: "student" });
+    if (!user) {
+      return res.status(404).json({ message: "Student not registered. Please register first." });
+    }
+
+    if (user.email !== email) {
+      return res.status(400).json({ message: "Email does not match our records." });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Store OTP in database (using empty password string since we're just resetting)
+    await OTP.deleteMany({ email });
+    await OTP.create({
+      email,
+      rollNumber,
+      otp,
+      password: "" // Not needed for forgot password
+    });
+
+    // Configure Nodemailer
+    const isBrevo = process.env.EMAIL_PASS && process.env.EMAIL_PASS.startsWith('xsmtpsib-');
+    const transporter = nodemailer.createTransport(
+      isBrevo 
+        ? {
+            host: "smtp-relay.brevo.com",
+            port: 587,
+            secure: false,
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            }
+          }
+        : {
+            service: "gmail",
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          }
+    );
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "IDFlow - Password Reset Code",
+      html: `
+        <h2>Password Reset</h2>
+        <p>Your one-time password (OTP) to reset your IDFlow account password is:</p>
+        <h1 style="color: #3b82f6; letter-spacing: 5px;">${otp}</h1>
+        <p>This code will expire in 5 minutes.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ message: "OTP sent successfully to your university email." });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server Error while sending email." });
+  }
+};
+
+// ===============================
+// Forgot Password - Verify OTP & Reset
+// POST /api/auth/forgot-password-verify-and-reset
+// ===============================
+const forgotPasswordVerifyAndReset = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long." });
+    }
+
+    // Find the OTP record
+    const otpRecord = await OTP.findOne({ email, otp });
+
+    if (!otpRecord) {
+      return res.status(400).json({ message: "Invalid or expired OTP." });
+    }
+
+    // Find user
+    const user = await User.findOne({ collegeId: otpRecord.rollNumber, email: otpRecord.email });
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update password (will be hashed by pre-save hook in User model)
+    user.password = newPassword;
+    await user.save();
+
+    // Clean up OTP
+    await OTP.deleteMany({ email });
+
+    // Automatically log them in after reset
+    generateToken(res, user._id, user.role);
+
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      collegeId: user.collegeId,
+      department: user.department,
+      branch: user.branch,
+      year: user.year,
+      photo: user.photo,
+      role: user.role,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server Error during password reset." });
+  }
+};
+
 module.exports = {
   registerSendOtp,
   registerVerify,
   authUser,
   authAdmin,
   logoutUser,
+  forgotPasswordSendOtp,
+  forgotPasswordVerifyAndReset,
 };
