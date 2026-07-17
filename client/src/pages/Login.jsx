@@ -26,9 +26,9 @@ const Login = () => {
     
     let success = false;
     if (isStudent) {
-      success = await loginStudent(collegeId, password);
+      success = await loginStudent(collegeId.trim(), password.trim());
     } else {
-      success = await loginAdmin(email, password);
+      success = await loginAdmin(email.trim(), password.trim());
     }
     
     setIsLoading(false);
@@ -79,7 +79,7 @@ const Login = () => {
                     type="text"
                     required
                     value={collegeId}
-                    onChange={(e) => setCollegeId(e.target.value.toUpperCase())}
+                    onChange={(e) => setCollegeId(e.target.value.toUpperCase().replace(/\s/g, ''))}
                     className="input-field"
                     placeholder="25B21CS001"
                   />
@@ -93,7 +93,7 @@ const Login = () => {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
                     className="input-field"
                     placeholder="admin@college.edu"
                   />
@@ -108,7 +108,7 @@ const Login = () => {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value.replace(/\s/g, ''))}
                   className="input-field pr-10"
                   placeholder="••••••••"
                 />
