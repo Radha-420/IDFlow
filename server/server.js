@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 // Enable CORS
 app.use(cors({
-  origin: 'https://id-flow-server-4x8wfvotd-radhakrishna2787-8770s-projects.vercel.app/', // Vite default port
+  origin: ['http://localhost:5173', 'https://idflow.vercel.app', 'https://idflow-project.vercel.app'], // Add your Vercel domains
   credentials: true,
 }));
 
@@ -53,6 +53,11 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running locally on port ${PORT}`);
+  });
+}
+
+// Export for Vercel Serverless
+module.exports = app;

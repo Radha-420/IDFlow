@@ -10,7 +10,9 @@ export const AuthProvider = ({ children }) => {
 
   // Configure axios defaults
   axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "https://id-flow-server-4x8wfvotd-radhakrishna2787-8770s-projects.vercel.app";
+  // Let Vite proxy handle local API calls, and let Vercel handle production API calls natively
+  axios.defaults.baseURL = import.meta.env.PROD ? '' : 'http://localhost:5000';
+  
   useEffect(() => {
     // Check if user info is in localStorage on load
     const storedUser = localStorage.getItem('userInfo');
