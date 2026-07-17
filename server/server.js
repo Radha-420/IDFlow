@@ -14,8 +14,7 @@ const studentRoutes = require('./routes/studentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
-// Connect to database
-connectDB();
+// We will connect via middleware instead of on boot
 
 const app = express();
 
@@ -25,6 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Cookie parser
 app.use(cookieParser());
+
+// Database connection middleware for Serverless
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // Enable CORS
 app.use(cors({
