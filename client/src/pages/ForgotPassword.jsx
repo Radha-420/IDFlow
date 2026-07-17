@@ -32,7 +32,7 @@ const ForgotPassword = () => {
       
       // Auto-update email when roll number changes
       if (name === 'rollNumber') {
-        updated.email = `${value.toLowerCase()}@adityauniversity.in`;
+        updated.email = `${value.toUpperCase()}@adityauniversity.in`;
       }
       
       return updated;
