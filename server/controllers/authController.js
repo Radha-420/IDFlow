@@ -281,13 +281,13 @@ const forgotPasswordSendOtp = async (req, res) => {
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Store OTP in database (using empty password string since we're just resetting)
+    // Store OTP in database (using placeholder password string since we're just resetting)
     await OTP.deleteMany({ email });
     await OTP.create({
       email,
       rollNumber,
       otp,
-      password: "" // Not needed for forgot password
+      password: "forgot-password" // Placeholder to satisfy Mongoose required validator
     });
 
     // Configure Nodemailer
