@@ -15,7 +15,7 @@ const Layout = () => {
       <div className="flex-1 flex flex-col overflow-hidden relative w-full">
         {/* Top Navbar / Header area */}
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-6 md:px-8 sticky top-0 z-10 w-full">
-          <h2 className="text-lg font-bold text-brand-900 md:text-gray-800 tracking-tight">ID Portal</h2>
+          <h2 className="text-lg font-bold text-brand-900 md:text-gray-800 tracking-tight">IDFlow</h2>
           
           <div className="flex items-center">
             {/* Mobile Logout Button */}
