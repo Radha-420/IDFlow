@@ -25,7 +25,7 @@ const Sidebar = () => {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-100 h-full shadow-sm sticky top-0">
       <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100 bg-brand-50">
-        <h1 className="text-xl font-bold text-brand-900 tracking-tight">ID Portal</h1>
+        <h1 className="text-xl font-bold text-brand-900 tracking-tight">IDFlow</h1>
       </div>
       
       <div className="p-6 flex-1 overflow-y-auto">
