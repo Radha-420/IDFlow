@@ -11,105 +11,134 @@ const PaymentHistory = () => {
 
   const downloadReceipt = (payment) => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
     
-    // Header
-    doc.setFontSize(24);
+    // Outer Border
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+
+    // Header - Centered
+    doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
-    doc.text("ADITYA UNIVERSITY", 40, 25);
+    doc.setTextColor(30, 58, 138); // Dark blue brand color
+    doc.text("ADITYA UNIVERSITY", pageWidth / 2, 28, { align: "center" });
     
-    // Top right logos / text
+    // Subheader
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text("08887 76661 | 98496 76662", 190, 15, { align: "right" });
-    
-    // Draw rough boxes for NAAC / NBA
-    doc.setDrawColor(0);
+    doc.setTextColor(100, 100, 100);
+    doc.text("08887 76661 | 98496 76662 | info@adityauniversity.in | www.adityauniversity.in", pageWidth / 2, 35, { align: "center" });
+
+    // Badges (NAAC / NBA)
+    doc.setDrawColor(150, 150, 150);
     doc.setLineWidth(0.3);
-    doc.roundedRect(145, 18, 25, 8, 3, 3);
-    doc.text("NAAC A++", 147, 23);
-    doc.roundedRect(175, 18, 15, 8, 3, 3);
-    doc.text("NBA", 178, 23);
+    doc.roundedRect(pageWidth / 2 - 27, 40, 24, 7, 2, 2);
+    doc.setTextColor(80, 80, 80);
+    doc.setFontSize(9);
+    doc.text("NAAC A++", pageWidth / 2 - 15, 45, { align: "center" });
     
-    doc.setFontSize(8);
-    doc.text("info@adityauniversity.in | www.adityauniversity.in", 190, 30, { align: "right" });
+    doc.roundedRect(pageWidth / 2 + 3, 40, 24, 7, 2, 2);
+    doc.text("NBA", pageWidth / 2 + 15, 45, { align: "center" });
 
-    // Student Details
-    doc.setFontSize(10);
-    doc.text("Name", 20, 45); 
-    doc.text(`: ${user?.name?.toUpperCase() || 'N/A'}`, 45, 45);
-    doc.text("Roll No.", 20, 52); 
-    doc.text(`: ${user?.collegeId || 'N/A'}`, 45, 52);
-    doc.text("Course", 20, 59); 
-    doc.text(`: B.Tech`, 45, 59);
-    doc.text("Receipt No", 20, 66); 
-    doc.text(`: AUS${new Date(payment.createdAt).getFullYear().toString().slice(-2)}/${payment.transactionId.slice(-5).toUpperCase()}`, 45, 66);
+    // Divider Line
+    doc.setDrawColor(220, 220, 220);
+    doc.line(20, 55, pageWidth - 20, 55);
 
-    doc.text("Branch/Section", 110, 52); 
-    doc.text(`: ${user?.department || 'CSE'}/Sec-@`, 140, 52);
-    doc.text("Date:", 145, 59); 
-    doc.text(new Date(payment.createdAt).toLocaleDateString('en-GB'), 155, 59);
+    // Dynamic Variables
+    const receiptNo = `AUS${new Date(payment.createdAt).getFullYear().toString().slice(-2)}/${payment.transactionId.slice(-5).toUpperCase()}`;
+    const date = new Date(payment.createdAt).toLocaleDateString('en-GB');
 
-    // Table
+    // Student Details Grid (using autoTable for perfect alignment)
     autoTable(doc, {
-      startY: 75,
-      head: [['Sl No', 'Particulars', 'Year/Sem', 'Amount']],
+      startY: 60,
+      theme: 'plain',
+      styles: { fontSize: 10, cellPadding: 2, textColor: [60, 60, 60] },
+      columnStyles: {
+        0: { fontStyle: 'bold', cellWidth: 35 },
+        1: { cellWidth: 65 },
+        2: { fontStyle: 'bold', cellWidth: 35 },
+        3: { cellWidth: 'auto' }
+      },
       body: [
-        ['1', 'Hallticket/Receipt/Zerox/Id Card', user?.year || '1', payment.amount.toString()]
+        ['Name', `: ${user?.name?.toUpperCase() || 'N/A'}`, 'Branch/Section', `: ${user?.department || 'CSE'} / Sec-@`],
+        ['Roll No.', `: ${user?.collegeId || 'N/A'}`, 'Date', `: ${date}`],
+        ['Course', `: ${user?.course || 'B.Tech'}`, 'Receipt No', `: ${receiptNo}`],
+      ],
+      margin: { left: 20, right: 20 }
+    });
+
+    // Payment Table
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 8,
+      head: [['Sl No', 'Particulars', 'Year/Sem', 'Amount (Rs.)']],
+      body: [
+        ['1', 'ID Card / Miscellaneous Fee', user?.year || '1', payment.amount.toString()]
       ],
       foot: [['', 'Total Amount', '', payment.amount.toString()]],
       theme: 'grid',
-      headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'normal' },
-      bodyStyles: { textColor: [0, 0, 0], lineWidth: 0.1 },
-      footStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold' },
+      headStyles: { fillColor: [240, 245, 250], textColor: [30, 58, 138], lineWidth: 0.1, fontStyle: 'bold' },
+      bodyStyles: { textColor: [60, 60, 60], lineWidth: 0.1 },
+      footStyles: { fillColor: [240, 245, 250], textColor: [30, 58, 138], lineWidth: 0.1, fontStyle: 'bold' },
       columnStyles: {
         0: { cellWidth: 15, halign: 'center' },
-        1: { cellWidth: 100 },
+        1: { cellWidth: 90 },
         2: { cellWidth: 25, halign: 'center' },
         3: { halign: 'right' }
-      }
+      },
+      margin: { left: 20, right: 20 }
     });
 
-    // Footer Details
     const finalY = doc.lastAutoTable.finalY + 15;
-    
-    // Amount in words (simple hardcode for 100 since ID card is always 100, but can be dynamic)
     const amountInWords = payment.amount === 100 ? "One Hundred" : payment.amount.toString();
     
+    // Bottom Details Grid
+    autoTable(doc, {
+      startY: finalY,
+      theme: 'plain',
+      styles: { fontSize: 10, cellPadding: 2, textColor: [60, 60, 60] },
+      columnStyles: {
+        0: { fontStyle: 'bold', cellWidth: 30 },
+        1: { cellWidth: 'auto' }
+      },
+      body: [
+        ['Rupees', `: ${amountInWords} Only`],
+        ['Mode', `: ${payment.paymentMethod || 'Online Payment'}`],
+        ['Narration', `: PIN Number Card Generation`],
+        ['Balance Due', `: 0`],
+      ],
+      margin: { left: 20 }
+    });
+
+    // Authorized Signature
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(30, 58, 138);
+    doc.text("Authorized Signatory", pageWidth - 45, finalY + 15, { align: "center" });
+    
     doc.setFont("helvetica", "normal");
-    doc.text("Rupees", 20, finalY); 
-    doc.text(`: ${amountInWords} Only`, 45, finalY);
-    doc.text("Mode", 20, finalY + 7); 
-    doc.text(`: ${payment.paymentMethod || 'Online'}`, 45, finalY + 7);
-    doc.text("Narration", 20, finalY + 14); 
-    doc.text(`: `, 45, finalY + 14);
-    doc.text("Balance Due", 20, finalY + 21); 
-    doc.text(`: 0`, 45, finalY + 21);
-
-    // Signature Stamp
-    doc.setDrawColor(200, 200, 255);
+    doc.setTextColor(100, 100, 100);
+    doc.text("(M MANIKANTA)", pageWidth - 45, finalY + 25, { align: "center" });
+    
+    // Digital Stamp outline
+    doc.setDrawColor(220, 220, 230);
     doc.setLineWidth(0.5);
-    doc.circle(160, finalY + 10, 15, 'S'); // Outer circle
-    doc.circle(160, finalY + 10, 13, 'S'); // Inner circle
-    
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 255); // Faint purple/blue for stamp text
-    doc.text("Society University", 160, finalY, { align: "center" });
-    
-    doc.setTextColor(0, 0, 0);
-    doc.text("Signature", 160, finalY + 10, { align: "center" });
-    doc.text("(M MANIKANTA)", 160, finalY + 15, { align: "center" });
+    doc.roundedRect(pageWidth - 75, finalY + 5, 60, 26, 3, 3);
+    doc.setFontSize(7);
+    doc.setTextColor(180, 180, 180);
+    doc.text("Digitally Verified", pageWidth - 45, finalY + 3, { align: "center" });
 
-    // Bottom Footer
+    // Footer Footer
     doc.setFontSize(8);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Powered by www.webprosindia.com", 20, finalY + 40);
+    doc.setTextColor(150, 150, 150);
+    doc.text("Powered by www.webprosindia.com", 20, pageHeight - 15);
     
     const printDate = new Date().toLocaleString('en-GB', {
       day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit', hour12: true
     }).replace(',', '');
     
-    doc.text(`Printed on ${printDate}`, 150, finalY + 40);
+    doc.text(`Printed on ${printDate}`, pageWidth - 20, pageHeight - 15, { align: "right" });
 
     doc.save(`Receipt_${payment.transactionId}.pdf`);
   };
