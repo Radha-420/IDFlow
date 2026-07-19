@@ -8,15 +8,15 @@ const {
   getApplicationStatus,
   getPaymentHistory,
 } = require('../controllers/studentController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, student } = require('../middleware/authMiddleware');
 
 router.route('/profile')
-  .get(protect, getStudentProfile)
-  .put(protect, updateStudentProfile);
+  .get(protect, student, getStudentProfile)
+  .put(protect, student, updateStudentProfile);
 
-router.get('/dashboard', protect, getStudentDashboard);
-router.post('/apply', protect, applyForIdCard);
-router.get('/status', protect, getApplicationStatus);
-router.get('/payment-history', protect, getPaymentHistory);
+router.get('/dashboard', protect, student, getStudentDashboard);
+router.post('/apply', protect, student, applyForIdCard);
+router.get('/status', protect, student, getApplicationStatus);
+router.get('/payment-history', protect, student, getPaymentHistory);
 
 module.exports = router;

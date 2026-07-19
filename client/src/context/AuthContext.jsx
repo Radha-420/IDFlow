@@ -20,6 +20,28 @@ export const AuthProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
+
+    // Axios interceptor for 401 Unauthorized responses
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && error.response.status === 401) {
+          // Token expired or role mismatch -> Force logout
+          setUser(null);
+          localStorage.removeItem('userInfo');
+          // We don't want to spam toasts if they just load the page and fail auth silently
+          if (window.location.pathname !== '/') {
+            toast.error('Session expired or invalid. Please log in again.');
+            window.location.href = '/';
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
   }, []);
 
   const loginStudent = async (collegeId, password) => {
