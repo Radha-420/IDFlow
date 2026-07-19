@@ -1,35 +1,40 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import { FiMenu } from 'react-icons/fi';
+import BottomNav from './BottomNav';
+import { AuthContext } from '../context/AuthContext';
+import { FiLogOut } from 'react-icons/fi';
 
 const Layout = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-      <Sidebar isOpen={isMobileMenuOpen} setIsOpen={setIsMobileMenuOpen} />
+      <Sidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden relative w-full">
         {/* Top Navbar / Header area */}
-        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center px-4 md:px-8 sticky top-0 z-10 w-full">
-          <button 
-            className="p-2 mr-3 rounded-lg text-gray-500 hover:bg-gray-100 md:hidden"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <FiMenu className="w-6 h-6" />
-          </button>
+        <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-6 md:px-8 sticky top-0 z-10 w-full">
+          <h2 className="text-lg font-bold text-brand-900 md:text-gray-800 tracking-tight">ID Portal</h2>
           
-          <h2 className="text-lg font-semibold text-gray-800">IDFlow</h2>
-          
-          <div className="flex items-center space-x-4 text-gray-500 ml-auto">
-            {/* Optional Header Actions */}
+          <div className="flex items-center">
+            {/* Mobile Logout Button */}
+            <button 
+              onClick={logout}
+              className="md:hidden flex items-center p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <FiLogOut className="w-5 h-5" />
+            </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50/50 w-full">
+        {/* Main Content Area - Added pb-20 to accommodate BottomNav on mobile */}
+        <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-8 md:pb-8 bg-gray-50/50 w-full">
           <Outlet />
         </main>
+        
+        {/* Mobile Bottom Navigation */}
+        <BottomNav />
       </div>
     </div>
   );

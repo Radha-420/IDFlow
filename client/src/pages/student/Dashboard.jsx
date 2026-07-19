@@ -88,12 +88,12 @@ const Dashboard = () => {
             
             {application ? (
               <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-                  <div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm gap-4 sm:gap-0">
+                  <div className="text-center sm:text-left">
                     <p className="text-sm text-gray-500 mb-1">Application No.</p>
                     <p className="font-mono font-semibold text-gray-800">{application.applicationNumber}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-center sm:text-right">
                     <p className="text-sm text-gray-500 mb-1">Current Status</p>
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
                       application.applicationStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
@@ -139,7 +139,7 @@ const Dashboard = () => {
             )}
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="card-container flex items-center p-4">
               <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mr-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>

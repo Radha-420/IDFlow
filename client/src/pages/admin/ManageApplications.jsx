@@ -139,7 +139,7 @@ const ManageApplications = () => {
                     
                     <div className="bg-gray-50 rounded-xl p-5 mb-6 flex flex-col md:flex-row gap-6">
                       <img src={selectedApp.student.photo} alt="" className="w-32 h-32 rounded-xl object-cover border-4 border-white shadow-sm" />
-                      <div className="flex-1 grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div><p className="text-gray-500 mb-1">Student Name</p><p className="font-semibold text-gray-800">{selectedApp.student.name}</p></div>
                         <div><p className="text-gray-500 mb-1">PIN Number</p><p className="font-semibold text-gray-800">{selectedApp.student.collegeId}</p></div>
                         <div><p className="text-gray-500 mb-1">Department</p><p className="font-medium text-gray-800">{selectedApp.student.department}</p></div>

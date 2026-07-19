@@ -124,15 +124,17 @@ const ApplyIdCard = () => {
         </div>
       ) : (
         <div className="card-container overflow-hidden p-0">
-          <div className="bg-brand-50/50 border-b border-brand-100 p-6 flex items-center">
-            <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mr-4">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+          <div className="bg-brand-50/50 border-b border-brand-100 p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0">
+            <div className="flex items-center">
+              <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-xl flex shrink-0 items-center justify-center mr-4">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-800">Fee Payment Details</h3>
+                <p className="text-sm text-gray-500">Original PIN Number Card Fee</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Fee Payment Details</h3>
-              <p className="text-sm text-gray-500">Original PIN Number Card Fee</p>
-            </div>
-            <div className="ml-auto text-right">
+            <div className="sm:ml-auto text-left sm:text-right border-t sm:border-t-0 border-gray-200 pt-3 sm:pt-0">
               <span className="text-sm text-gray-500 block">Amount</span>
               <span className="text-2xl font-bold text-brand-600">₹100</span>
             </div>
